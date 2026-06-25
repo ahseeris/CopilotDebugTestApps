@@ -9,8 +9,10 @@ namespace eShop.ClientApp;
 
 class Program
 {
-    static async Task Main(string[] args)
+    static async Task<int> Main(string[] args)
     {
+        bool verifyMode = args.Contains("--verify");
+
         Console.WriteLine("╔══════════════════════════════════════╗");
         Console.WriteLine("║      eShop Client Application       ║");
         Console.WriteLine("╚══════════════════════════════════════╝");
@@ -82,8 +84,25 @@ class Program
         Console.WriteLine();
         Console.WriteLine("Done.");
 
+        if (verifyMode)
+        {
+            // Verify the fix: badge count should be 0 after deleting all items
+            int finalBadge = basketViewModel.BadgeCount;
+            if (finalBadge == 0)
+            {
+                Console.WriteLine("VERIFY PASS: Badge count is 0 after deleting all items.");
+                return 0;
+            }
+            else
+            {
+                Console.WriteLine($"VERIFY FAIL: Badge count is {finalBadge}, expected 0.");
+                return 1;
+            }
+        }
+
         // Keep the process alive so the debugger can attach, set breakpoints, and re-run.
         // The test runner kills the process when the simulation ends.
         Console.ReadLine();
+        return 0;
     }
 }
